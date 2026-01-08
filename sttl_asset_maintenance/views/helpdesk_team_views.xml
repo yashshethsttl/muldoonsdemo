@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="helpdesk_team_view_form_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.team.form.inherit</field>
+        <field name="model">helpdesk.team</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_team_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='after-sales']" position="inside">
+                <setting help='Activate Maintenance button'>
+                    <field name='maintenance' />
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

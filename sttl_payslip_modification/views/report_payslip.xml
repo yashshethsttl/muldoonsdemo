@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sttl_report_payslip_inherit" inherit_id="hr_payroll.report_payslip">
+        <xpath expr="//table/tbody[@id='payslip_lines']/span" position="attributes">
+            <attribute name="t-foreach">o.line_ids.filtered(lambda line: line.appears_on_payslip and line.total &gt; 0) </attribute>
+        </xpath>
+    </template>
+</odoo>

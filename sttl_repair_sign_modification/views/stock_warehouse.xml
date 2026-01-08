@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="warehouse_assets_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.form.inherited</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='warehouse_config']/group" position="before">
+                <group string="Assets Warehouse">
+                    <field name="is_assets"/>
+                    <field name="return_type_id"  required="is_assets" invisible="not is_assets" options="{'no_create': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

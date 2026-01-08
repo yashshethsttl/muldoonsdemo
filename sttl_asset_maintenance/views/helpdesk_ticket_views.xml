@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="helpdesk_ticket_view_form_inherited" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.custom</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button name="action_view_maintenance_requests" type="object" class="oe_stat_button" icon="fa-wrench" invisible="not maintenance_count">
+                    <field name="maintenance_count" widget="statinfo" string="Maintenance"/>
+                </button>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="team_maintenance" invisible="1"/>
+                <button name="action_view_maintenance" string="Maintenance" type="object" class="btn" invisible="not team_maintenance or maintenance_count &lt; 1"/>
+                <button name="action_create_maintenance" string="Plan Maintenance" type="object" class="btn" invisible="not team_maintenance or maintenance_count &gt; 0" groups="helpdesk.group_helpdesk_manager"/>
+                <button name="action_purchase_new_machine" string="Purchase New Equipment" type="object" invisible="request_type != 'installation'" groups="helpdesk.group_helpdesk_manager"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="product_id" domain="[('id', 'in', filtered_product_ids)]"/>
+                <field name="asset_ids" widget="many2many_tags" domain="[('product_id', '=', product_id), ('id', 'in', allowed_stock_lot_ids)]" context="{'wizard_show_asset': True}"/>
+                <field name="allowed_stock_lot_ids" invisible="1" force_save="1"/>
+                <field name="schedule_date" widget="datetime"/>
+                <field name="partner_child_id"/>
+                <field name="allowed_product_ids" invisible="1" force_save="1"/>
+            </xpath>
+
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='description']" position="attributes">
+                <attribute name="string">Specials Instructions</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="context">{'res_partner_search_mode': 'customer',
+                                            'default_phone': partner_phone, 'show_address': 1, 'show_vat': True}</attribute>
+            </xpath>
+
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='extra_info']" position="after">
+                <page string="Photos" name="photos">
+                    <group>
+                        <group>
+                            <field name="image_1" widget="image"/>
+                        </group>
+                        <group>
+                            <field name="image_2" widget="image"/>  
+                        </group>
+                    </group>
+                </page>
+                <page string="Similar Machines">
+                    <field name="available_lot_ids">
+                        <list readonly="1">
+                            <field name="name"/>
+                            <field name="product_id"/>
+                            <field name="location_id"/>
+                            <!-- <field name="current_location"/> -->
+                            <field name="ref" string="Asset ID"/>
+                            <field name="asset_status_id"/>
+                            <field name="ref"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="request_type"/>
+            </xpath>
+
+            <!-- <xpath expr="//button[@name='action_generate_fsm_task']" position="after">
+                <button string="Plan Maintenance" name="action_create_maintenance" type="object"/>
+            </xpath> -->
+        </field>
+    </record>
+</odoo>

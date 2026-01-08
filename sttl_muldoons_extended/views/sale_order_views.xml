@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sttl_view_order_form_inherit_order_type" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.order.type</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='validity_date']" position="after">
+                <field name="order_type"/>
+            </xpath>
+            <xpath expr="//sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='product_uom_qty']" position="after">
+                <field name="qty_available_today"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_call_in_quotations" model="ir.actions.act_window">
+        <field name="name">Call-In Quotations</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">
+            [
+                ('state', 'in', ['draft', 'sent']),
+                ('order_type', '=', 'call_in')
+            ]
+        </field>
+        <field name="context">
+            {
+                'default_order_type': 'call_in'
+            }
+        </field>
+    </record>
+
+    <record id="action_call_in_orders" model="ir.actions.act_window">
+        <field name="name">Call-In Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">
+            [
+                ('state', 'in', ['sale', 'done']),
+                ('order_type', '=', 'call_in')
+            ]
+        </field>
+        <field name="context">
+            {
+                'default_order_type': 'call_in'
+            }
+        </field>
+    </record>
+
+    <record id="action_hostesses_quotations" model="ir.actions.act_window">
+        <field name="name">Hostesses Quotations</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">
+            [
+                ('state', 'in', ['draft', 'sent']),
+                ('order_type', '=', 'hostesses')
+            ]
+        </field>
+        <field name="context">
+            {
+                'default_order_type': 'hostesses'
+            }
+        </field>
+    </record>
+
+    <record id="action_hostesses_orders" model="ir.actions.act_window">
+        <field name="name">Hostesses Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">
+            [
+                ('state', 'in', ['sale', 'done']),
+                ('order_type', '=', 'hostesses')
+            ]
+        </field>
+        <field name="context">
+            {
+                'default_order_type': 'hostesses'
+            }
+        </field>
+    </record>
+
+    <record id="action_standard_quotations" model="ir.actions.act_window">
+        <field name="name">Standard Quotations</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">
+            [
+                ('state', 'in', ['draft', 'sent']),
+                ('order_type', '=', 'std_order_ocs')
+            ]
+        </field>
+        <field name="context">
+            {
+                'default_order_type': 'std_order_ocs'
+            }
+        </field>
+    </record>
+
+    <record id="action_standard_orders" model="ir.actions.act_window">
+        <field name="name">Standard Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">
+            [
+                ('state', 'in', ['sale', 'done']),
+                ('order_type', '=', 'std_order_ocs')
+            ]
+        </field>
+        <field name="context">
+            {
+                'default_order_type': 'std_order_ocs'
+            }
+        </field>
+    </record>
+
+    <menuitem id="menu_call_in" sequence="11" name="Call-In" parent='sale.sale_order_menu'/>
+    <menuitem id="menu_call_in_quotations" sequence="1" name="Call in Quotations" action="action_call_in_quotations" parent='menu_call_in'/>
+    <menuitem id="menu_call_in_orders" sequence="2" name="Call in Orders" action="action_call_in_orders" parent='menu_call_in'/>
+
+    <menuitem id="menu_hostesses" sequence="12" name="Hostesses" parent='sale.sale_order_menu'/>
+    <menuitem id="menu_hostesses_quotations" sequence="1" name="Hostesses Quotations" action="action_hostesses_quotations" parent='menu_hostesses'/>
+    <menuitem id="menu_hostesses_orders" sequence="2" name="Hostesses Orders" action="action_hostesses_orders" parent='menu_hostesses'/>
+
+    <menuitem id="menu_standard_ocs" sequence="13" name="Standard Order (OCS)" parent='sale.sale_order_menu'/>
+    <menuitem id="menu_standard_quotations" sequence="1" name="OCS Quotations" action="action_standard_quotations" parent='menu_standard_ocs'/>
+    <menuitem id="menu_standard_orders" sequence="2" name="OCS Orders" action="action_standard_orders" parent='menu_standard_ocs'/>
+</odoo>

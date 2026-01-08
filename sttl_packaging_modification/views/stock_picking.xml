@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="stock_picking_packaging_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+             <xpath expr="//button[@name='do_print_picking']" position="after">
+                <button name="action_packaging_create" type="object" class="btn btn-primary" string="Create Packaging" invisible="state in ('draft', 'done', 'cancel') and picking_type_code != 'incoming'"/>
+             </xpath>
+             <xpath expr="//button[@name='action_put_in_pack']" position="attributes">
+                 <attribute name="invisible">1</attribute>
+             </xpath>
+        </field>
+    </record>
+</odoo>

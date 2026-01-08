@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="stock_barcode.MainComponent" t-inherit="stock_barcode.MainComponent" t-inherit-mode="extension">
+        <xpath expr="//button[@class='o_put_in_pack btn btn-secondary']" position="after">
+            <button t-if="!(['draft', 'done', 'cancel'].includes(env.model.record.state)) || env.model.record.picking_type_code === 'incoming'" 
+                    t-on-click="createPackaging"
+                    class="o_create_packaging btn btn-secondary">
+                Create Packaging
+            </button>
+        </xpath>
+    </t>
+</templates>

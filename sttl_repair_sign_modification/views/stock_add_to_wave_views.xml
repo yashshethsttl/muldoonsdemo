@@ -1,0 +1,12 @@
+<odoo>
+    <record id="stock_add_to_wave_form_inherit" model="ir.ui.view">
+        <field name="name">stock.add.to.wave.form.inherit</field>
+        <field name="model">stock.add.to.wave</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_add_to_wave_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_id" options="{'no_create': True}" invisible="mode == 'existing'" string="Picker"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

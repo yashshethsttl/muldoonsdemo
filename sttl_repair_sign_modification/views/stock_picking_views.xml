@@ -1,0 +1,33 @@
+<odoo>
+    <record id="stock_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherited</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_id" widget="many2one_avatar_user" domain="[('share', '=', False)]"
+                       readonly="state in ['cancel', 'done']" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="driver_id" widget="many2one_avatar_user" domain="[('share', '=', False)]"
+                       readonly="state in ['cancel', 'done']" string="Driver"/>
+                <field name="user_id" widget="many2one_avatar_user" domain="[('share', '=', False)]"
+                       readonly="state in ['cancel', 'done']" string="Picker"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_list_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.list.inherited</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_id" optional="hide" widget="many2one_avatar_user"
+                       readonly="state in ['cancel', 'done']" string="Picker"/>
+                <field name="driver_id" optional="hide" widget="many2one_avatar_user"
+                       readonly="state in ['cancel', 'done']" string="Driver"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

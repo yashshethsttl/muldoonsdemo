@@ -1,0 +1,47 @@
+<odoo>
+    <record id="repair_order_sign_inherit" model="ir.ui.view">
+        <field name="name">repair.order.sign.inherited</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[1]" position="before">
+                <button name="action_sign" type="object" class="oe_highlight" string="Sign" invisible="not can_sign"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_repair_order_tree_inherit" model="ir.ui.view">
+        <field name="name">repair.order.sign.inherited</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="consolidated_sign" type="object" class="oe_highlight" string="Sign"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="internal_notes" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_repair_order_search_inherit" model="ir.ui.view">
+        <field name="name">repair.order.sign.inherited</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_draft']" position="before">
+                <filter string="Repaired Orders" name="repaired_orders_to_be_signed" domain="[('state', '=', 'done'), ('is_signed', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="repair.action_repair_order_tree" model="ir.actions.act_window">
+        <field name="context">{"search_default_repaired_orders_to_be_signed": 1}</field>
+    </record>
+
+    <record id="repair.action_picking_repair" model="ir.actions.act_window">
+        <field name="context">{'default_picking_type_id': active_id, 'search_default_repaired_orders_to_be_signed': 1}</field>
+    </record>
+</odoo>

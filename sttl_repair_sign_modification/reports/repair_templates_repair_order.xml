@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_repairorder" inherit_id="repair.report_repairorder">
+            <xpath expr="//div[@t-if='o.internal_notes']" position="after">
+                <div t-if="not o.signature" class="oe_structure"></div>
+                <div t-else="" class="mt32 ml64 mr4" name="signature">
+                    <div class="offset-8">
+                        <strong>Signature</strong>
+                    </div>
+                    <div class="offset-8">
+                        <img t-att-src="image_data_uri(o.signature)" style="max-height: 4cm; max-width: 8cm;"/>
+                    </div>
+                    <div t-if="o.partner_id.name" class="offset-8 text-center">
+                        <p t-field="o.sign_text">John Doe</p>
+                    </div>
+                </div>
+            </xpath>
+
+            <xpath expr="//h2[hasclass('mb-3') and hasclass('border-bottom') and hasclass('border-2') and hasclass('border-dark')]" position="attributes">
+                <attribute name="t-if">o.move_ids</attribute>
+            </xpath>
+
+            <xpath expr="//table[hasclass('table') and hasclass('table-borderless') and hasclass('o_main_table')]" position="attributes">
+                <attribute name="t-if">o.move_ids</attribute>
+            </xpath>
+
+            <xpath expr="//div[@t-if='o.internal_notes']" position="attributes">
+                <attribute name="t-if">o.internal_notes and o.internal_notes.striptags()</attribute>
+            </xpath>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,45 @@
+.o_form_status_indicator_buttons {
+    margin-left: 10px;
+
+    .o_form_button_save,
+    .o_form_button_cancel {
+        width: 60px;
+        min-height: 35px !important;
+        max-height: 33px !important;
+        border-color: #714B67;
+        border-radius: 5px;
+
+
+        &.o_form_button_save {
+            background-color: $primary;
+            color: #fff;
+
+            &:hover {
+                filter: brightness(0.9);
+            }
+        }
+
+        &.o_form_button_cancel {
+            margin-left: 5px;
+
+            &:hover {
+                background-color: #f6f7fa;
+                border-color: #e0e2e6;
+            }
+        }
+
+        .save_button {
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .discard_button {
+            border-color: #714B67;
+            display: inline-block;
+            cursor: pointer;
+            width: 50px;
+            max-height: 30px;
+            color: #714B67;
+        }
+    }
+}

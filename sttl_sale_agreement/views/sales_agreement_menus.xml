@@ -1,0 +1,14 @@
+<odoo>
+    <record id="action_sales_agreement_menu" model="ir.actions.act_window">
+        <field name="name">Sales Agreement</field>
+        <field name="res_model">sale.requisition</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+  <menuitem id="menu_sales_Agreements"
+              name="Sales Agreement"
+              parent="sale.sale_order_menu"
+              sequence="10"
+              action="action_sales_agreement_menu"/>
+</odoo>

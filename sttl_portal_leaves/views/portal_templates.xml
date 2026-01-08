@@ -1,0 +1,312 @@
+<odoo>
+    <data>
+        <template id="portal_my_leaves" name="My Leaves" inherit_id="portal.portal_my_home" customize_show="True" priority="30">
+            <xpath expr="//div[@id='portal_common_category']" position="inside">
+                <t t-set="portal_user" t-value="em_user"/>
+                <t t-call="portal.portal_docs_entry" t-if="portal_user">
+                    <t t-set="icon" t-value="'/sttl_portal_leaves/static/src/img/LEAVE-removebg-preview.png'" style="height: 64px; width: 64px;"/>
+                    <t t-set="title">My Leaves</t>
+                    <t t-set="text">View or Apply for Leaves</t>
+                    <t t-set="url" t-value="'/my/leaves'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="request_unit_hour">
+            <div class="form-group mt-3">
+                <label id="start-date-label" for="start-date" class="col-form-label">Start Date:</label>
+                <input required="True" id="start-date" name="date_from" type="date"
+                    class="leave_dates form-control"  />
+                <div id="end-date-div">
+                    <label for="end-date" class="col-form-label">End Date:</label>
+                    <input required="True" name="date_to" type="date" class="leave_dates form-control"
+                        id="end-date" />
+                </div>
+                <select required="True" class="form-select mt-3" style="width: 50%; display: none;"
+                    name="request_date_from_period" id="request_date_from_period">
+                    <option value="am">Morning</option>
+                    <option value="pm">Afternoon</option>
+                </select>
+                <div class="form-check form-check-inline mt-4 ms-2">
+                    <input class="hour_check form-check-input" type="checkbox" name="request_unit_half"
+                        id="half-day" value="half_day"/>
+                    <label class="form-check-label" for="half-day">Half Day</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="hour_check form-check-input" type="checkbox" name="request_unit_half"
+                        id="custom-hours" value="custom_hours"/>
+                    <label class="form-check-label" for="custom-hours">Custom Hours</label>
+                </div>
+            </div>
+        </template>
+    
+        <template id="request_unit_days">
+            <label for="start-date" class="col-form-label">Start Date:</label>
+            <input required="True" name="date_from" type="date" class="leave_dates form-control"
+                id="start-date" />
+            <label for="end-date" class="col-form-label">End Date:</label>
+            <input required="True" name="date_to" type="date" class="leave_dates form-control"
+                id="end-date" />
+        </template>
+    
+        <template id="leave_duration">
+            <label for="leave_duration" class="col-form-label">Duration:</label>
+            <input type="text" readonly="1" class="form-control" id="leave_duration"
+            />
+        </template>
+    
+        <template id="time_selection">
+            <div class="d-flex">
+                <label for="start-time" class="col-form-label mx-2">From:</label>
+                <select required="True" style="width:40%;" name="request_hour_from" class="hour_select form-control" id="start-time">
+                    <option value="0">12:00 AM</option>
+                    <option value="0.5">12:30 AM</option>
+                    <option value="1">1:00 AM</option>
+                    <option value="1.5">1:30 AM</option>
+                    <option value="2">2:00 AM</option>
+                    <option value="2.5">2:30 AM</option>
+                    <option value="3">3:00 AM</option>
+                    <option value="3.5">3:30 AM</option>
+                    <option value="4">4:00 AM</option>
+                    <option value="4.5">4:30 AM</option>
+                    <option value="5">5:00 AM</option>
+                    <option value="5.5">5:30 AM</option>
+                    <option value="6">6:00 AM</option>
+                    <option value="6.5">6:30 AM</option>
+                    <option value="7">7:00 AM</option>
+                    <option value="7.5">7:30 AM</option>
+                    <option value="8">8:00 AM</option>
+                    <option value="8.5">8:30 AM</option>
+                    <option value="9">9:00 AM</option>
+                    <option value="9.5">9:30 AM</option>
+                    <option value="10">10:00 AM</option>
+                    <option value="10.5">10:30 AM</option>
+                    <option value="11">11:00 AM</option>
+                    <option value="11.5">11:30 AM</option>
+                    <option value="12">12:00 PM</option>
+                    <option value="12.5">12:30 PM</option>
+                    <option value="13">1:00 PM</option>
+                    <option value="13.5">1:30 PM</option>
+                    <option value="14">2:00 PM</option>
+                    <option value="14.5">2:30 PM</option>
+                    <option value="15">3:00 PM</option>
+                    <option value="15.5">3:30 PM</option>
+                    <option value="16">4:00 PM</option>
+                    <option value="16.5">4:30 PM</option>
+                    <option value="17">5:00 PM</option>
+                    <option value="17.5">5:30 PM</option>
+                    <option value="18">6:00 PM</option>
+                    <option value="18.5">6:30 PM</option>
+                    <option value="19">7:00 PM</option>
+                    <option value="19.5">7:30 PM</option>
+                    <option value="20">8:00 PM</option>
+                    <option value="20.5">8:30 PM</option>
+                    <option value="21">9:00 PM</option>
+                    <option value="21.5">9:30 PM</option>
+                    <option value="22">10:00 PM</option>
+                    <option value="22.5">10:30 PM</option>
+                    <option value="23">11:00 PM</option>
+                    <option value="23.5">11:30 PM</option>
+                </select>
+                <label for="end-time" class="mx-2 col-form-label">To:</label>
+                <select required="True" style="width:40%;" name="request_hour_to" class="hour_select form-control" id="end-time">
+                    <option value="0">12:00 AM</option>
+                    <option value="0.5">12:30 AM</option>
+                    <option value="1">1:00 AM</option>
+                    <option value="1.5">1:30 AM</option>
+                    <option value="2">2:00 AM</option>
+                    <option value="2.5">2:30 AM</option>
+                    <option value="3">3:00 AM</option>
+                    <option value="3.5">3:30 AM</option>
+                    <option value="4">4:00 AM</option>
+                    <option value="4.5">4:30 AM</option>
+                    <option value="5">5:00 AM</option>
+                    <option value="5.5">5:30 AM</option>
+                    <option value="6">6:00 AM</option>
+                    <option value="6.5">6:30 AM</option>
+                    <option value="7">7:00 AM</option>
+                    <option value="7.5">7:30 AM</option>
+                    <option value="8">8:00 AM</option>
+                    <option value="8.5">8:30 AM</option>
+                    <option value="9">9:00 AM</option>
+                    <option value="9.5">9:30 AM</option>
+                    <option value="10">10:00 AM</option>
+                    <option value="10.5">10:30 AM</option>
+                    <option value="11">11:00 AM</option>
+                    <option value="11.5">11:30 AM</option>
+                    <option value="12">12:00 PM</option>
+                    <option value="12.5">12:30 PM</option>
+                    <option value="13">1:00 PM</option>
+                    <option value="13.5">1:30 PM</option>
+                    <option value="14">2:00 PM</option>
+                    <option value="14.5">2:30 PM</option>
+                    <option value="15">3:00 PM</option>
+                    <option value="15.5">3:30 PM</option>
+                    <option value="16">4:00 PM</option>
+                    <option value="16.5">4:30 PM</option>
+                    <option value="17">5:00 PM</option>
+                    <option value="17.5">5:30 PM</option>
+                    <option value="18">6:00 PM</option>
+                    <option value="18.5">6:30 PM</option>
+                    <option value="19">7:00 PM</option>
+                    <option value="19.5">7:30 PM</option>
+                    <option value="20">8:00 PM</option>
+                    <option value="20.5">8:30 PM</option>
+                    <option value="21">9:00 PM</option>
+                    <option value="21.5">9:30 PM</option>
+                    <option value="22">10:00 PM</option>
+                    <option value="22.5">10:30 PM</option>
+                    <option value="23">11:00 PM</option>
+                    <option value="23.5">11:30 PM</option>
+                </select>
+            </div>
+        </template>
+
+        <template id="request_unit_hour_edit">
+            <div class="form-group mt-3">
+                <label id="start-date-label-edit" for="start-date-edit" class="col-form-label">Start Date:</label>
+                <input required="True" name="date_from" type="date" class="leave_dates form-control"
+                    id="start-date-edit"/>
+                <div id="end-date-div">
+                <label for="end-date-edit" class="col-form-label">End Date:</label>
+                <input required="True" name="date_to" type="date" class="leave_dates form-control"
+                    id="end-date-edit"/>
+                    </div>
+                <select required="True" class="form-select mt-3" style="width: 50%; display: none;" name="request_date_from_period" id="request_date_from_period_edit">
+                    <option value="am">Morning</option>
+                    <option value="pm">Afternoon</option>
+                </select>
+                <div class="form-check form-check-inline mt-4 ms-2">
+                    <input class="hour_check form-check-input" type="checkbox" name="request_unit_half" id="half-day-edit" value="half_day"/>
+                    <label class="form-check-label" for="half-day">Half Day</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="hour_check form-check-input" type="checkbox" name="request_unit_half" id="custom-hours-edit" value="custom_hours"/>
+                    <label class="form-check-label" for="custom-hours">Custom Hours</label>
+                </div>          
+            </div>
+        </template>
+
+        <template id="request_unit_days_edit">
+            <label for="start-date-edit" class="col-form-label">Start Date:</label>
+                <input required="True" name="date_from" type="date" class="leave_dates form-control"
+                    id="start-date-edit"/>
+                <label for="end-date-edit" class="col-form-label">End Date:</label>
+                <input required="True" name="date_to" type="date" class="leave_dates form-control"
+                    id="end-date-edit" />
+        </template>
+
+        <template id="leave_duration_edit">
+            <label for="leave_duration_edit" class="col-form-label">Duration:</label>
+                        <input type="text" readonly="1" class="form-control" id="leave_duration_edit"/>
+        </template>
+
+        <template id="time_selection_edit">
+            <div class="d-flex">
+                <label for="start-time-edit" class="col-form-label mx-2">From:</label>
+                <select required="True" style="width:40%;" name="request_hour_from" class="hour_select form-control" id="start-time-edit">
+                    <option value="0">12:00 AM</option>
+                    <option value="0.5">12:30 AM</option>
+                    <option value="1">1:00 AM</option>
+                    <option value="1.5">1:30 AM</option>
+                    <option value="2">2:00 AM</option>
+                    <option value="2.5">2:30 AM</option>
+                    <option value="3">3:00 AM</option>
+                    <option value="3.5">3:30 AM</option>
+                    <option value="4">4:00 AM</option>
+                    <option value="4.5">4:30 AM</option>
+                    <option value="5">5:00 AM</option>
+                    <option value="5.5">5:30 AM</option>
+                    <option value="6">6:00 AM</option>
+                    <option value="6.5">6:30 AM</option>
+                    <option value="7">7:00 AM</option>
+                    <option value="7.5">7:30 AM</option>
+                    <option value="8">8:00 AM</option>
+                    <option value="8.5">8:30 AM</option>
+                    <option value="9">9:00 AM</option>
+                    <option value="9.5">9:30 AM</option>
+                    <option value="10">10:00 AM</option>
+                    <option value="10.5">10:30 AM</option>
+                    <option value="11">11:00 AM</option>
+                    <option value="11.5">11:30 AM</option>
+                    <option value="12">12:00 PM</option>
+                    <option value="12.5">12:30 PM</option>
+                    <option value="13">1:00 PM</option>
+                    <option value="13.5">1:30 PM</option>
+                    <option value="14">2:00 PM</option>
+                    <option value="14.5">2:30 PM</option>
+                    <option value="15">3:00 PM</option>
+                    <option value="15.5">3:30 PM</option>
+                    <option value="16">4:00 PM</option>
+                    <option value="16.5">4:30 PM</option>
+                    <option value="17">5:00 PM</option>
+                    <option value="17.5">5:30 PM</option>
+                    <option value="18">6:00 PM</option>
+                    <option value="18.5">6:30 PM</option>
+                    <option value="19">7:00 PM</option>
+                    <option value="19.5">7:30 PM</option>
+                    <option value="20">8:00 PM</option>
+                    <option value="20.5">8:30 PM</option>
+                    <option value="21">9:00 PM</option>
+                    <option value="21.5">9:30 PM</option>
+                    <option value="22">10:00 PM</option>
+                    <option value="22.5">10:30 PM</option>
+                    <option value="23">11:00 PM</option>
+                    <option value="23.5">11:30 PM</option>
+                </select>
+                <label for="end-time-edit" class="mx-2 col-form-label">To:</label>
+                <select required="True" style="width:40%;" name="request_hour_to" class="hour_select form-control" id="end-time-edit">
+                    <option value="0">12:00 AM</option>
+                    <option value="0.5">12:30 AM</option>
+                    <option value="1">1:00 AM</option>
+                    <option value="1.5">1:30 AM</option>
+                    <option value="2">2:00 AM</option>
+                    <option value="2.5">2:30 AM</option>
+                    <option value="3">3:00 AM</option>
+                    <option value="3.5">3:30 AM</option>
+                    <option value="4">4:00 AM</option>
+                    <option value="4.5">4:30 AM</option>
+                    <option value="5">5:00 AM</option>
+                    <option value="5.5">5:30 AM</option>
+                    <option value="6">6:00 AM</option>
+                    <option value="6.5">6:30 AM</option>
+                    <option value="7">7:00 AM</option>
+                    <option value="7.5">7:30 AM</option>
+                    <option value="8">8:00 AM</option>
+                    <option value="8.5">8:30 AM</option>
+                    <option value="9">9:00 AM</option>
+                    <option value="9.5">9:30 AM</option>
+                    <option value="10">10:00 AM</option>
+                    <option value="10.5">10:30 AM</option>
+                    <option value="11">11:00 AM</option>
+                    <option value="11.5">11:30 AM</option>
+                    <option value="12">12:00 PM</option>
+                    <option value="12.5">12:30 PM</option>
+                    <option value="13">1:00 PM</option>
+                    <option value="13.5">1:30 PM</option>
+                    <option value="14">2:00 PM</option>
+                    <option value="14.5">2:30 PM</option>
+                    <option value="15">3:00 PM</option>
+                    <option value="15.5">3:30 PM</option>
+                    <option value="16">4:00 PM</option>
+                    <option value="16.5">4:30 PM</option>
+                    <option value="17">5:00 PM</option>
+                    <option value="17.5">5:30 PM</option>
+                    <option value="18">6:00 PM</option>
+                    <option value="18.5">6:30 PM</option>
+                    <option value="19">7:00 PM</option>
+                    <option value="19.5">7:30 PM</option>
+                    <option value="20">8:00 PM</option>
+                    <option value="20.5">8:30 PM</option>
+                    <option value="21">9:00 PM</option>
+                    <option value="21.5">9:30 PM</option>
+                    <option value="22">10:00 PM</option>
+                    <option value="22.5">10:30 PM</option>
+                    <option value="23">11:00 PM</option>
+                    <option value="23.5">11:30 PM</option>
+                </select>
+            </div>
+        </template>
+    </data>
+</odoo>

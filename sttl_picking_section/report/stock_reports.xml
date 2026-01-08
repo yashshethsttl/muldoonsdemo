@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_picking_inherit" inherit_id="stock.report_picking">
+            <xpath expr="//tr[@t-as='ml']" position="attributes">
+                <t t-set="move_lines" t-value="o.move_line_ids_without_package.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))"/>
+                <attribute name="t-foreach">o.move_line_ids_without_package.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name)).filtered(lambda ml: not ml.display_type)</attribute>
+            </xpath>
+        </template>
+
+        <template id="report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
+            <xpath expr="//t[@t-set='lines']" position="replace">
+                <t t-set="lines" t-value="o.move_ids.filtered(lambda x: x.product_uom_qty and not x.display_type)"/>
+            </xpath>
+            <xpath expr="//t[@t-set='move_lines']" position="replace">
+                <t t-set="move_lines" t-value="o.move_line_ids.filtered(lambda l: not l.result_package_id and not l.display_type)"/>
+            </xpath>
+            <xpath expr="//t[@t-set='packages']" position="replace">
+                <t t-set="packages" t-value="o.move_line_ids.filtered(lambda l: not l.display_type).mapped('result_package_id')"/>
+            </xpath>
+            <xpath expr="//t[@t-set='package_move_lines']" position="replace">
+                <t t-set="package_move_lines" t-value="o.move_line_ids.filtered(lambda l: l.result_package_id == package and not l.display_type)"/>
+            </xpath>
+            <xpath expr="//t[@t-set='aggregated_lines'][1]" position="replace">
+                <t t-set="aggregated_lines" t-value="o.move_line_ids.filtered(lambda l: not l.display_type)._get_aggregated_product_quantities(except_package=True)"/>
+            </xpath>
+            <xpath expr="//t[@name='aggregated_move_lines']/t[@t-set='aggregated_lines']"  position="replace">
+                <t t-set="aggregated_lines" t-value="o.move_line_ids.filtered(lambda l: not l.display_type)._get_aggregated_product_quantities()"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>

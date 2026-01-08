@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="product_template_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.template.form.view.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="related_assets" string="Related Assets" invisible="not is_asset">
+                    <field name="related_asset_ids">
+                        <list string="Related Assets" editable="bottom">
+                            <field name="product_id" domain="[('is_asset', '=', True), ('id', '!=', parent.id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

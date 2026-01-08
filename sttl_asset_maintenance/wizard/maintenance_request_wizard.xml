@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="maintenance_request_wizard_form" model="ir.ui.view">
+        <field name="name">maintenance.request.wizard.form</field>
+        <field name="model">maintenance.request.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Maintenance Request">
+                <group>
+                    <field name="product_id" required="1" domain="[('is_asset', '=', True), ('id', 'in', allowed_product_ids)]"/>
+                    <field name="asset_ids" widget="many2many_tags" domain="[('product_id', '=', product_id), ('id', 'in', allowed_stock_lot_ids)]" context="{'wizard_show_asset': True}" required="1"/>
+                </group>
+                <footer>
+                    <button name="create_maintenance_request" string="Create" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

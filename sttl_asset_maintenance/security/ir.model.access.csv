@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_related_asset,access_product_related_asset,model_product_related_asset,base.group_user,1,1,1,1
+access_maintenance_sign_wizard,access_maintenance_sign_wizard,model_maintenance_sign_wizard,base.group_user,1,1,1,1
+access_maintenance_request_wizard,access_maintenance_request_wizard,model_maintenance_request_wizard,base.group_user,1,1,1,1
+access_asset_status,access_asset_status,model_asset_status,base.group_user,1,1,1,1
+access_maintenance_technician_notes,access_maintenance_technician_notes,model_maintenance_technician_notes,base.group_user,1,1,1,1

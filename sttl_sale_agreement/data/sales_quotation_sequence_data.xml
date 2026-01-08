@@ -1,0 +1,8 @@
+<odoo>
+    <record id="seq_sales_agreement" model="ir.sequence">
+    <field name="name">Sales Agreement</field>
+    <field name="code">sale.requisition</field>
+    <field name="prefix">SBO</field>
+    <field name="padding">5</field>
+    </record>
+</odoo>

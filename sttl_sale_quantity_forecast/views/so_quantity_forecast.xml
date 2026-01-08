@@ -1,0 +1,284 @@
+<odoo>
+    <template id="sttl_report_quantity_forecast">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="sttl_sale_quantity_forecast.sttl_report_quantity_forecasting_rep"
+                   t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="muldoons_external_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <div t-attf-class="header o_company_#{company.id}_layout" style="padding:0mm;margin:0px;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <img t-if="company.logo" class="o_company_logo_small" t-att-src="image_data_uri(company.logo)"
+                     alt="Logo"/>
+            </div>
+        </div>
+
+        <div class="article" style="padding:0mm;margin:0;">
+            <t t-out="0"/>
+        </div>
+
+    </template>
+
+
+    <template id="sttl_report_quantity_forecasting_rep">
+        <t t-call="sttl_sale_quantity_forecast.muldoons_external_layout">
+            <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
+            <t t-if="o.order_line">
+
+                <!-- Fully Available Products -->
+                <div style="margin-top:25px;" class="text-center fw-bold h5">Fully Available Products</div>
+                <table class="table" t-if="o.order_line" cellpadding="0" cellspacing="0"
+                       style="border:none;page-break-inside: avoid;">
+                    <thead style="background-color:#A9A9A9;">
+                        <tr>
+                            <th class="text-center">
+                                <strong>No.</strong>
+                            </th>
+                            <th class="text-start">
+                                <strong>Product Name</strong>
+                            </th>
+                            <th class="text-start">
+                                <strong>Product Description</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>Order Quantity</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>Available Quantity</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>Backorder Quantity</strong>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="count" t-value="0"/>
+                        <tr t-foreach="o.order_line" t-as="line">
+                            <t t-set="free_qty" t-value="line.get_reserved_qty() or 0"/>
+                            <t t-set="product_qty" t-value="line.product_uom_qty or 0"/>
+
+                            <t t-if="line.display_type == 'line_section'">
+                                <t t-set="pending_section" t-value="line"/>
+                            </t>
+                            <t t-elif="line.display_type == 'line_note'">
+                                <td colspan="100%">
+                                    <t t-esc="line.name"/>
+                                </td>
+                            </t>
+
+                            <t t-if="free_qty >= product_qty and line.display_type not in ('line_note', 'line_section')">
+                                <t t-if="pending_section">
+                                    <tr>
+                                        <td colspan="100%" class="fw-bold">
+                                            <t t-esc="pending_section.name"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="pending_section" t-value="None"/>
+                                </t>
+                                <t t-set="count" t-value="count + 1"/>
+                                <td class="text-center">
+                                    <t t-esc="count"/>
+                                </td>
+                                <td class="text-start">
+                                    <t t-esc="line.product_id.display_name"/>
+                                </td>
+                                <td class="text-start">
+                                    <t t-esc="line.name"/>
+                                </td>
+                                <td class="text-center">
+                                    <span t-field="line.product_uom_qty"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="line.get_reserved_qty()"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="line.product_uom_qty -line.get_reserved_qty()"/>
+                                </td>
+
+                            </t>
+                        </tr>
+                        <tr t-if="count == 0">
+                            <td colspan="7" class="text-center">Nothing to display</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Partially Available Products -->
+                <div style="margin-top:25px;" class="text-center fw-bold h5">Partially Available Products</div>
+                <table class="table" t-if="o.order_line" cellpadding="0" cellspacing="0"
+                       style="border:none;page-break-inside: avoid;">
+                    <thead style="background-color:#A9A9A9;">
+                        <tr>
+                            <th class="text-center">
+                                <strong>No.</strong>
+                            </th>
+                            <th class="text-start">
+                                <strong>Product Name</strong>
+                            </th>
+                            <th class="text-start">
+                                <strong>Product Description</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>Order Quantity</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>Available Quantity</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>Backorder Quantity</strong>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="count" t-value="0"/>
+                        <tr t-foreach="o.order_line" t-as="line">
+                            <t t-set="free_qty" t-value="line.get_reserved_qty() or 0"/>
+                            <t t-set="product_qty" t-value="line.product_uom_qty or 0"/>
+
+                            <t t-if="line.display_type == 'line_section'">
+                                <t t-set="pending_section" t-value="line"/>
+                            </t>
+                            <t t-elif="line.display_type == 'line_note'">
+                                <td colspan="100%">
+                                    <t t-esc="line.name"/>
+                                </td>
+                            </t>
+
+                            <t t-if="free_qty &lt; product_qty and free_qty &gt; 0 and line.display_type not in ('line_note', 'line_section')">
+                                <t t-if="pending_section">
+                                    <tr>
+                                        <td colspan="100%" class="fw-bold">
+                                            <t t-esc="pending_section.name"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="pending_section" t-value="None"/>
+                                </t>
+                                <t t-set="count" t-value="count + 1"/>
+                                <td class="text-center">
+                                    <t t-esc="count"/>
+                                </td>
+                                <td class="text-start">
+                                    <t t-esc="line.product_id.display_name"/>
+                                </td>
+                                <td class="text-start">
+                                    <t t-esc="line.name"/>
+                                </td>
+                                <td class="text-center">
+                                    <span t-field="line.product_uom_qty"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="line.get_reserved_qty()"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="line.product_uom_qty -line.get_reserved_qty()"/>
+                                </td>
+
+                            </t>
+                        </tr>
+                        <tr t-if="count == 0">
+                            <td colspan="7" class="text-center">Nothing to display</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Out of Stock Products -->
+                <div style="margin-top:25px;" class="text-center fw-bold h5">Out of Stock Products</div>
+                <table class="table" t-if="o.order_line" cellpadding="0" cellspacing="0"
+                       style="border:none;page-break-inside: avoid;">
+                    <thead style="background-color:#A9A9A9;">
+                        <tr>
+                            <th class="text-center">
+                                <strong>No.</strong>
+                            </th>
+                            <th class="text-start">
+                                <strong>Product Name</strong>
+                            </th>
+                            <th class="text-start">
+                                <strong>Product Description</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>Order Quantity</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>Available Quantity</strong>
+                            </th>
+                            <th class="text-center">
+                                <strong>Backorder Quantity</strong>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="count" t-value="0"/>
+                        <tr t-foreach="o.order_line" t-as="line">
+                            <t t-set="free_qty" t-value="line.get_reserved_qty() or 0"/>
+                            <t t-set="product_qty" t-value="line.product_uom_qty or 0"/>
+
+                            <t t-if="line.display_type == 'line_section'">
+                                <t t-set="pending_section" t-value="line"/>
+                            </t>
+                            <t t-elif="line.display_type == 'line_note'">
+                                <td colspan="100%">
+                                    <t t-esc="line.name"/>
+                                </td>
+                            </t>
+
+                            <t t-if="free_qty &lt;= 0 and line.display_type not in ('line_note', 'line_section')">
+                                <t t-if="pending_section">
+                                    <tr>
+                                        <td colspan="100%" class="fw-bold">
+                                            <t t-esc="pending_section.name"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="pending_section" t-value="None"/>
+                                </t>
+                                <t t-set="count" t-value="count + 1"/>
+                                <td class="text-center">
+                                    <t t-esc="count"/>
+                                </td>
+                                <td class="text-start">
+                                    <t t-esc="line.product_id.display_name"/>
+                                </td>
+                                <td class="text-start">
+                                    <t t-esc="line.name"/>
+                                </td>
+                                <td class="text-center">
+                                    <span t-field="line.product_uom_qty"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="line.get_reserved_qty()"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="line.product_uom_qty -line.get_reserved_qty()"/>
+                                </td>
+
+                            </t>
+                        </tr>
+                        <tr t-if="count == 0">
+                            <td colspan="7" class="text-center">Nothing to display</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_site_report_list" model="ir.ui.view">
+        <field name="name">site.report.list</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <list string="Site Report">
+                <field name="parent_id" string="Customer Name"/>
+                <field name="site_id" string="Site Id"/>
+                <field name="partner_id" string="Site Address"/>
+                <field name="product_id" string="Product"/>
+                <field name="product_uom_qty" string="Quantity"/>
+                <button name="open_move_history" string="View" type="object"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_move_search_parent_address" model="ir.ui.view">
+        <field name="name">stock.move.search.parent.address</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group//filter[@name='status']" position="before">
+                <filter string="Parent Company" name="parent_company" domain="[]" context="{'group_by': 'parent_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_site_report_form" model="ir.ui.view">
+        <field name="name">site.report.form</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <form string="Site Report">
+                <group>
+                    <field name="parent_id"/>
+                    <field name="site_id"/>
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                    <field name="product_uom_qty"/>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>

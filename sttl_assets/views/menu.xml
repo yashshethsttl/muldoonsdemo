@@ -1,0 +1,107 @@
+<odoo>
+    <record id="action_assets_management" model="ir.actions.act_window">
+        <field name="name">Assets Management</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.lot</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="sttl_assets.view_production_lot_asset_tree"/>
+        <field name="domain">
+            [('product_id.is_asset', '=', '1')]
+        </field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('sttl_assets.view_production_lot_asset_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('sttl_assets.view_production_lot_asset_form')})
+        ]"/>
+    </record>
+
+    <record id="action_product_product" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">
+            [('is_asset', '=', '1')]
+        </field>
+        <field name="view_id" ref="product.product_template_kanban_view"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('product.product_template_kanban_view')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('product.product_template_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('product.product_template_only_form_view')}),
+        ]"/>
+    </record>
+
+    <record id="action_maintenance_frequency" model="ir.actions.act_window">
+        <field name="name">Maintenance Frequency</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.frequency</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_alert_duration" model="ir.actions.act_window">
+        <field name="name">Alert Duration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">alert.duration</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_site_report" model="ir.actions.act_window">
+        <field name="name">Site Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">
+            [('picking_id.state', '=', 'done'),
+            ('partner_id', '!=', False),
+            ('display_type', '=', False),
+            ('product_id.is_asset', '=', True)]
+        </field>
+        <field name="view_id" ref="sttl_assets.view_site_report_list"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('sttl_assets.view_site_report_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('sttl_assets.view_site_report_form')}),
+        ]"/>
+    </record>
+
+    <record id="action_asset_repair_order_graph" model="ir.actions.act_window">
+        <field name="name">Repair Orders</field>
+        <field name="context">{
+            'search_default_product': 1,
+            'search_default_createDate': 1,
+        }
+        </field>
+        <field name="res_model">repair.order</field>
+        <field name="view_mode">list,kanban,graph,pivot,form</field>
+        <field name="view_id" ref="repair.view_repair_graph"/>
+    </record>
+
+    <menuitem
+            name="Assets"
+            id="assets_menu_parent"
+            action="sttl_assets.action_assets_management"
+            sequence="1"
+            web_icon="sttl_assets,static/description/logo.png"
+    />
+    <menuitem
+            name="Assets"
+            id="assets_sub_menu"
+            parent="assets_menu_parent"
+            action="sttl_assets.action_assets_management"
+            sequence="2"
+    />
+    <menuitem
+            name="Products"
+            id="assets_products_menu"
+            parent="assets_menu_parent"
+            action="sttl_assets.action_product_product"
+            sequence="3"
+    />
+    <menuitem name="Configuration" id="assets_configuration_menu" parent="assets_menu_parent" sequence="4"/>
+    <menuitem name="Reporting" id="assets_reporting_menu" parent="assets_menu_parent" sequence="3"/>
+    <menuitem name="Site Report" id="assets_site_report_menu" parent="assets_reporting_menu" action="sttl_assets.action_site_report" sequence="5"/>
+    <menuitem name="Repair Schedule" id="assets_repair_report_menu" parent="assets_reporting_menu" action="sttl_assets.action_asset_repair_order_graph" sequence="5"/>
+    <menuitem name="Alert Duration" id="assets_alert_duration_menu" parent="assets_configuration_menu" action="sttl_assets.action_alert_duration" sequence="5"/>
+    <menuitem name="Maintenance Frequency" id="assets_maintenance_frequency_menu" parent="assets_configuration_menu" action="sttl_assets.action_maintenance_frequency" sequence="10"/>
+</odoo>

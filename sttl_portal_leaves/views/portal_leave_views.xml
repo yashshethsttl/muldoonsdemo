@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_menu_leaves" name="Portal layout : my leaves"
+        inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'leaves'"
+                t-attf-class="breadcrumb-item #{'active ' if not leaves else ''}">
+                <span>My Leave Allocations</span>
+            </li>
+            <li t-if="page_name == 'timeoff'"
+                t-attf-class="breadcrumb-item #{'active ' if not invoice else ''}">
+                <a href="/my/leaves">
+                    <span>My Leave Allocations</span>
+                </a>
+            </li>
+            <li t-if="page_name == 'timeoff'"
+                t-attf-class="breadcrumb-item #{'active ' if not invoice else ''}">
+                <span>My Time Off</span>
+            </li>
+
+                <button onclick="window.location.href='/my/timeoff'" t-if="page_name=='leaves'"
+                    type="submit" class="ms-2 btn-sm p-1 btn btn-primary"> My Time Off</button>
+
+            <button t-if="page_name=='timeoff'" type="button"
+                class="btn btn-sm btn-primary ms-2 " data-bs-toggle="modal"
+                data-bs-target="#timeoffModal">Apply Time Off</button>
+
+            <div class="modal fade" id="timeoffModal" tabindex="-1" role="dialog"
+                aria-labelledby="timeoffModalHead" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="timeoffModalHead">Apply for Time Off</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form id="timeoff-form" action="" method="POST" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="time-off-type" class="col-form-label">Time off Type:</label>
+                                    <select name="holiday_status_id" class="form-select"
+                                        id="time-off-type" required="1">
+                                        <option></option>
+                                        <t t-foreach="allocations" t-as="allocation">
+                                            <option t-att-value="allocation.id">
+                                                <span t-field="allocation.name" />
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="timeoff-selection" style="display: none;">
+                                    
+                                </div>
+
+                                <div class="form-group" id="hour-selection" style="display: none;">
+                                </div>
+                                <div id="duration"></div>
+                                <div class="form-group selectfile d-none">
+                                    <label for="myfile" class="col-form-label">Select a file:</label>
+                                    <input type="file" id="myfile" class="form-control" name="attachment" multiple="multiple"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="col-form-label">Description:</label>
+                                    <textarea name="name" class="form-control" id="message-text"
+                                        required="1"></textarea>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <h6 class="text-danger" id="timeoff-error"></h6>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                        Close</button>
+                                    <button type="submit" class="btn btn-primary">Apply</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="my_leaves" name="My Leaves" >
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Leaves</t>
+            </t>
+            <div class="row mb-5" style="background-color: #f8f9fa">
+                <t t-foreach="holidays" t-as="holiday">
+                    <t t-set="data" t-value="holiday[1]"/>
+                    <t t-set="duration">
+                        <t t-if="data['requires_allocation']">
+                            <t t-esc="data['virtual_remaining_leaves']" />
+                        </t>
+                        <t t-else="">
+                            <t t-esc="data['virtual_leaves_taken']" />
+                        </t>
+                    </t>
+                    <div class="col-3 px-5 py-3 text-center" style="border : 1px solid #dee2e6; ">
+                        <span t-esc="data['name']"/><br/>
+                        <t t-if="data and data['icon']">
+                            <img t-att-src="data['icon']" style="width: 30px"/>
+                        </t>
+                        <span t-esc="duration" class="h4" style="color: RGBA(113, 99, 158); font-weight:bold; margin-top:5px;"/><br/>
+                        <span
+                        class="text-uppercase o_timeoff_details p-1">
+                        <t t-if="data['request_unit'] == 'hour'" name="duration_unit">hours</t>
+                        <t t-else="">days</t>
+                        <t t-if="data['requires_allocation']" name="duration_type">
+                            available
+                        </t></span><br/>
+
+                        <span t-if="data['requires_allocation'] == True and data['closest_allocation_expire'] != false" class="text-uppercase o_timeoff_validity">
+                            <t t-if="data['closest_allocation_remaining'] != data['virtual_remaining_leaves']">
+                                (<t t-esc="data['closest_allocation_remaining']"/> <t t-if="data['request_unit'] == 'hour'">hours</t><t t-else="">days</t>
+                                valid until <span t-esc="data['closest_allocation_expire']"/>)
+                            </t>
+                            <t t-else="">
+                                (valid until <span t-esc="data['closest_allocation_expire']"/>)
+                            </t>
+                        </span>
+                    </div>
+                </t>
+                <div class="col">
+                    <button t-if="page_name=='leaves'" type="button" class="mt-4 btn btn-secondary ms-2 "
+                data-bs-toggle="modal"
+                data-bs-target="#LeaveAllocationModal">New Allocation Request</button>
+                </div>
+
+            <div class="modal fade" id="LeaveAllocationModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Leave Allocation Request</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/add/allocation" method="POST">
+                                <div class="form-group">
+                                    <label for="name" class="col-form-label">Name:</label>
+                                    <div class="d-flex">
+                                        <input name="name" type="text"
+                                            class="form-control me-2" id="name" required="1" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="time-off-type" class="col-form-label">Time off Type:</label>
+                                    <select name="holiday_status_id" class="form-select"
+                                        id="time-off-type-allocation" required="1">
+                                        <option></option>
+                                        <t t-foreach="leave_types" t-as="leave_type">
+                                            <option t-att-value="leave_type.id">
+                                                <span t-field="leave_type.name" />
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="number_of_days" class="col-form-label">Allocation:</label>
+                                    <div class="d-flex">
+                                        <input style="width: 90%;" name="number_of_days" type="number"
+                                            class="form-control me-2" id="number_of_days"
+                                            required="1" />
+                                        <span style="margin-top:7px;" id="amount_unit">Days</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="notes" class="col-form-label">Reason:</label>
+                                    <textarea name="notes" class="form-control" id="notes"
+                                        required="1"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                        Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            </div>  
+
+
+            <t t-if="not leaves">
+                <p class="alert alert-warning">There are currently no leaves for your account.</p>
+            </t>
+            <t t-if="leaves" t-call="portal.portal_table" >
+                <thead>
+                    <tr class="active">
+                        <th>Time off Type</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Allocation Type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody >
+                    <t t-foreach="leaves" t-as="leave">
+                        <tr>
+                            <td>
+                                <t t-out="leave.holiday_status_id.name" />
+                            </td>
+                            <td>
+                                <span t-field="leave.name" />
+                            </td>
+                            <td class='d-none d-md-table-cell'>
+
+                                <span t-field="leave.duration_display" />
+                            </td>
+                            <td>
+                                <span t-field="leave.allocation_type" />
+                            </td>
+                            <td name="allocation_status">
+                                <t t-if="leave.state == 'validate'" name="invoice_status_posted">
+                                    <span
+                                        class="badge rounded-pill text-bg-success p-2">
+                                        <span class="d-none d-md-inline"> Approved</span>
+                                    </span>
+                                </t>
+                                <t t-elif="leave.state == 'confirm'">
+                                    <span class="badge rounded-pill text-bg-warning p-2">
+                                        <span class="d-none d-md-inline"> To Approve</span>
+                                    </span>
+                                </t>
+                                <t t-elif="leave.state == 'refuse'">
+                                    <span class="badge rounded-pill text-bg-danger p-2">
+                                        <span class="d-none d-md-inline"> Refused</span>
+                                    </span>
+                                </t>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+            <div class="mb-5"/>
+        </t>
+    </template>
+
+    <template id="my_timeoff" name="My Timeoff">
+        <t t-call="portal.portal_layout">
+            <div id="timeoff-div">
+                <t t-set="breadcrumbs_searchbar" t-value="True" />
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">My Timeoff</t>
+                </t>
+                <t t-if="not leaves">
+                    <p class="alert alert-warning">There are currently no Time Off for your account.</p>
+                </t>
+                <t t-if="leaves" t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active">
+                            <th>Time off Type</th>
+                            <th>Description</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Duration</th>
+                            <th colspan="3">Status</th>
+                        </tr>
+                    </thead>
+
+                    <t t-foreach="grouped_leaves" t-as="grouped_leave">
+                        <t t-set="leaves" t-value="grouped_leave[0]"/>
+                        <t t-set="units_spent" t-value="grouped_leave[1]"/>
+                        <tbody style="font-size: 0.8rem; width: 100%;">
+                            <tr t-if="not groupby =='none'" class="table-light" >
+                                <t t-if="groupby == 'holiday_status_id'">
+                                    <th t-if="groupby == 'holiday_status_id'" colspan="8" >
+                                        <span t-field="leaves[0].holiday_status_id.name"/>
+                                    </th>
+
+                                </t>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <t t-foreach="leaves" t-as="leave">
+                                <tr>
+                                    <td>
+                                        <t t-out="leave.holiday_status_id.name" />
+                                    </td>
+                                    <td>
+                                        <span t-field="leave.name" />
+                                    </td>
+                                    <td class='d-none d-md-table-cell'>
+                                        <span t-field="leave.date_from" />
+                                    </td>
+                                    <td>
+                                        <span t-field="leave.date_to" />
+                                    </td>
+                                    <td>
+                                        <span t-field="leave.duration_display" />
+                                    </td>
+                                    <td name="allocation_status">
+                                        <t t-if="leave.state == 'validate'" name="invoice_status_posted">
+                                            <span
+                                                class="badge rounded-pill text-bg-success p-2">
+                                                <span class="d-none d-md-inline"> Approved</span>
+                                            </span>
+                                        </t>
+                                        <t t-elif="leave.state == 'confirm'">
+                                            <span class="badge rounded-pill text-bg-warning p-2">
+                                                <span class="d-none d-md-inline"> To Approve</span>
+                                            </span>
+                                        </t>
+                                        <t t-elif="leave.state == 'refuse'">
+                                            <span class="badge rounded-pill text-bg-danger p-2">
+                                                <span class="d-none d-md-inline"> Refused</span>
+                                            </span>
+                                        </t>
+                                        <t t-if="leave.state == 'draft'" name="invoice_status_posted">
+                                            <span
+                                                class="badge rounded-pill text-bg-info p-2">
+                                                <span class="d-none d-md-inline"> To Submit</span>
+                                            </span>
+                                        </t>
+                                        <t t-if="leave.state == 'validate1'" name="invoice_status_posted">
+                                            <span
+                                                class="badge rounded-pill text-bg-warning p-2">
+                                                <span class="d-none d-md-inline"> Second Approval</span>
+                                            </span>
+                                        </t>
+                                    </td>
+
+                                    <td t-if="leave.state == 'confirm'">
+                                        <a href="#"  t-att-data-leave-id="leave.id" class="fa fa-edit" data-bs-toggle="modal" data-bs-target="#EditLeaveModal"></a>
+                                        <div class="modal fade" id="EditLeaveModal" tabindex="-1" role="dialog"
+                                        aria-labelledby="editTimeoffLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editTimeoffLabel">Edit Time Off</h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="timeoff-form-edit" action="" method="POST" enctype="multipart/form-data">
+                                                        <div class="form-group">
+                                                            <input name="id" type="text" id="leaveIdInput" class="d-none"></input>
+                                                            <label for="time-off-type-edit" class="col-form-label">Time off Type:</label>
+                                                            <select name="holiday_status_id" class="form-select"
+                                                                id="time-off-type-edit" required="1">
+                                                                <option></option>
+                                                                <t t-foreach="allocations" t-as="allocation">
+                                                                    <option t-att-value="allocation.id">
+                                                                        <span t-field="allocation.name" />
+                                                                    </option>
+                                                                </t>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group" id="timeoff-selection-edit" style="display: none;">
+                                                            
+                                                        </div>
+
+                                                        <div class="form-group" id="hour-selection-edit" style="display: none;">
+                                                        </div>
+                                                        <div id="duration-edit"></div>
+                                                        <div class="form-group selectfile d-none" id="attachment_edit">
+                                                            <label for="myfile-edit" class="col-form-label">Select a file:</label>
+                                                            <input type="file" id="myfile-edit" class="form-control" name="attachment" multiple="multiple"/>
+                                                            <div id="timeoff-edit" class="form-group d-grid">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="message-text" class="col-form-label">Description:</label>
+                                                            <textarea name="name" class="form-control" id="message-text-edit"
+                                                                required="1"></textarea>
+                                                        </div>
+                                                        <div class="form-group mt-3">
+                                                            <h6 class="text-danger" id="timeoff-error-edit"></h6>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                                Close</button>
+                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </td>
+                                    <td t-else=""></td>
+                                    <td t-if="leave.state == 'confirm'">
+                                        <a href="#"  t-att-data-leave-id="leave.id" class="fa fa-trash" data-bs-toggle="modal" data-bs-target="#CancelLeaveModal"></a>
+                                        <div class="modal fade" id="CancelLeaveModal" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Cancel Time Off</h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="/remove/timeoff" method="POST">  
+                                                        <div class="form-group">
+                                                            <label for="notes" class="col-form-label">Reason:</label>
+                                                            <textarea name="notes" class="form-control" id="notes"
+                                                                required="1"></textarea>
+                                                        </div>
+                                                        <div class="form-group d-none">
+                                                            <div class="d-flex">
+                                                                <input name="leave_id" type="number" class="form-control me-2"  id="modal-leave-id"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                                Close</button>
+                                                            <button type="submit" class="btn btn-primary">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </td>
+                                    <td t-else=""></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </t>                   
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="leave_error" name="My Timeoff">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <h5 class="card-header">Warning</h5>
+                <div class="card-body">
+                    <h5 class="card-title" t-esc="error_header" />
+                    <p class="card-text" t-esc="error_body" />
+                    <a href="/my/home" class="btn btn-primary">Go to My Account</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

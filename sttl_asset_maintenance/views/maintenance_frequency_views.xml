@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_maintenance_frequency" model="ir.actions.act_window">
+        <field name="name">Maintenance Frequency</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.frequency</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem name="Maintenance Frequency" id="assets_maintenance_frequency_menu" parent="maintenance.menu_maintenance_configuration"
+     action="sttl_assets.action_maintenance_frequency" sequence="4"/>
+</odoo>

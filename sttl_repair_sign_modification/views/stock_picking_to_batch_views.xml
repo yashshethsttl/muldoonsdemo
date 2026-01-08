@@ -1,0 +1,12 @@
+<odoo>
+    <record id="stock_picking_to_batch_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.to.batch.form.inherit</field>
+        <field name="model">stock.picking.to.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_to_batch_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_id" options="{'no_create': True}" invisible="mode == 'existing'" string="Picker"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_picking_form_inherit">
+            <field name="name">sale.stock.view.picking.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="replace">
+                    <button name="%(sttl_picking_section.action_report_delivery_sn)d" string="Print" invisible="state != 'done'" type="action" groups="base.group_user" data-hotkey="o"/>
+                </xpath>
+
+                <field name="move_ids_without_package" position="attributes">
+                    <attribute name="widget">combined_one2many</attribute>
+                    <attribute name="mode">list</attribute>
+                </field>
+
+                <!-- <xpath
+                        expr="//field[@name='move_ids_without_package']/list/field[@name='company_id']"
+                        position="before">
+                    <field name="display_type" column_invisible="1"/>
+                    <field name="sequence" widget="handle" readonly="1"/>
+                </xpath> -->
+
+                <!-- <xpath
+                        expr="//field[@name='move_ids_without_package']/list/field[@name='name']"
+                        position="after">
+                    <field name="name" widget="section_and_note_text"/>
+                </xpath> -->
+
+                <!-- <xpath expr="//field[@name='move_ids_without_package']/list" position="inside">
+                    <control>
+                        <create name="add_line_control" string="Add a line"/>
+                        <create name="add_section_control" string="Add a section"
+                                context="{'default_display_type': 'line_section'}"/>
+                        <create name="add_note_control" string="Add a note"
+                                context="{'default_display_type': 'line_note'}"/>
+                    </control>
+                </xpath> -->
+
+                <xpath expr="//field[@name='move_ids_without_package']/list/field[@name='product_id']"
+                       position="attributes">
+                    <attribute name="widget">product_label_section_and_note_field</attribute>
+                    <attribute name="required">not display_type</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='move_ids_without_package']/list/field[@name='product_uom']"
+                       position="attributes">
+                    <attribute name="required">not display_type</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

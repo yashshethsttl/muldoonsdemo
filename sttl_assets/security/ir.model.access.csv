@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+sttl_assets.access_alert_duration,access_alert_duration,sttl_assets.model_alert_duration,base.group_user,1,1,1,1
+sttl_assets.access_maintenance_frequency,access_maintenance_frequency,sttl_assets.model_maintenance_frequency,base.group_user,1,1,1,1
+sttl_assets.access_related_assets,access_related_assets,sttl_assets.model_related_assets,base.group_user,1,1,1,1
+sttl_assets.access_asset_repair_expense,access_asset_repair_expense,sttl_assets.model_asset_repair_expense,base.group_user,1,1,1,1
+sttl_assets.access_asset_other_expense,access_asset_other_expense,sttl_assets.model_asset_other_expense,base.group_user,1,1,1,1

@@ -1,0 +1,234 @@
+<odoo>
+    <record id="view_production_lot_asset_form" model="ir.ui.view">
+        <field name="name">stock.production.lot.asset.form</field>
+        <field name="model">stock.lot</field>
+        <field name="priority">10</field>
+        <field name="arch" type="xml">
+            <form string="Lots/Serial Numbers" js_class="stock_form_auto_save">
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <field name="display_complete" invisible="1"/>
+                    <field name="stock_valuation_layer_ids" invisible="1"/>
+
+                    <div class="oe_button_box" name="button_box"
+                         invisible="not display_complete">
+                        <button class="oe_stat_button" name="action_lot_open_transfers"
+                                type="object" icon="fa-truck" help="Transfers"
+                                invisible="delivery_count == 0">
+                            <field name="delivery_count" widget="statinfo" string="Transfers"/>
+                        </button>
+                        <button type="object"
+                                name="action_view_stock_valuation_layers"
+                                class="oe_stat_button" icon="fa-dollar" groups="account.group_account_invoice"
+                                invisible="not stock_valuation_layer_ids">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Valuation</span>
+                            </div>
+                        </button>
+                        <button name="action_lot_open_account_assets" icon="fa-bars" class="oe_stat_button"
+                                type="object">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Account Assets</span>
+                            </div>
+                        </button>
+                        <button name="action_lot_open_repairs" icon="fa-wrench" class="oe_stat_button" type="object">
+                            <div class="o_field_widget o_stat_info">
+                                <div class="o_field_widget o_stat_info align-items-baseline flex-row gap-1 me-1">
+                                    <span class="o_stat_text">Repair Orders</span>
+                                    <span class="o_stat_value">
+                                        <field name="total_repair_count" widget="statinfo" nolabel="1" class="mr4"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </button>
+                        <button name="action_lot_open_quants" icon="fa-arrows" class="oe_stat_button" type="object">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Location</span>
+                            </div>
+                        </button>
+                        <button name="%(sttl_assets.action_stock_asset)d" icon="oi-arrow-up" class="oe_stat_button"
+                                type="action">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Traceability</span>
+                            </div>
+                        </button>
+                        <button name="open_field_service" icon="fa-puzzle-piece" class="oe_stat_button"
+                                type="object">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Field Service</span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ref" string="Asset Id"/>
+                            <div class="oe_title">
+                                <label for="name"/>
+                                <h1>
+                                    <field name="name" placeholder="e.g. LOT/0001/20121"/>
+                                </h1>
+                            </div>
+                            <!--                        <field name="is_asset"/>-->
+                        </group>
+                        <group>
+                            <field name="stock_lot_image" nolabel="1" class="oe_right" options='{"size": [240, 240]}'
+                                   widget="image"/>
+                            <field name="total_cost" />
+                            <field name="installation_date" />
+                        </group>
+                    </group>
+                    <group name="main_group">
+                        <group>
+                            <field name="account_asset_id" domain="[('asset_connected','=',False)]"/>
+                             <field name="asset_model_id" readonly="0"/>
+                            <field name="asset_group_id" readonly="0"/>
+                            <field name="product_id"
+                                   context="{'default_is_storable': True, 'default_tracking': 'lot'}"
+                                   readonly="context.get('set_product_readonly', False)"
+                                   force_save="1"
+                                   help="Product this lot/serial number contains. You cannot change it anymore if it has already been moved."
+                                   domain="[
+                                   ('tracking', '!=', 'none'),
+                                   ('is_storable', '=', True),
+                                   ('product_tmpl_id.is_asset', '=', True)
+                               ] +
+                               ([('product_tmpl_id', '=', context['default_product_tmpl_id'])] if context.get('default_product_tmpl_id') else [])"/>
+
+                            <!-- <label for="product_qty" invisible="not display_complete"/>
+                            <div class="o_row" invisible="not display_complete">
+                                <field name="product_qty" invisible="1"/>
+                                <field name="product_uom_id" groups="uom.group_uom" invisible="1"/>
+                            </div> -->
+
+                            <field name="site_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="location_id" groups="stock.group_stock_manager" string="Location" readonly="1"/>
+                            <field name="location_usage" invisible="1"/>
+                            <field name="site_name_id" invisible="location_usage == 'internal'"/>
+                            <field name="last_delivery_partner_id_copy" invisible="1"/>
+                            <field name="last_delivery_partner_id" groups="stock.group_stock_manager" string="Site Address" invisible="location_usage == 'internal'"/>
+                            
+                            <!-- <field name="site_name_id" invisible="location_name != 'Partners/Customers'"/>
+                            <field name="last_delivery_partner_id" groups="stock.group_stock_manager" string="Site Address" invisible="location_name != 'Partners/Customers'"/> -->
+                        </group>
+                        <group invisible="1">
+                            <field name="company_currency_id" invisible="1"/>
+                            <label for="total_value"/>
+                            <div class="o_row">
+                                <field name="total_value" widget="monetary" class="oe_inline"
+                                       options="{'currency_field': 'company_currency_id'}"/>
+                            </div>
+                            <label for="avg_cost"/>
+                            <div class="o_row">
+                                <field name="avg_cost" widget="monetary" class="oe_inline"
+                                       options="{'currency_field': 'company_currency_id'}"/>
+                            </div>
+                            <label for="standard_price"/>
+                            <div class="o_row">
+                                <field name="standard_price" widget="monetary" class="oe_inline"
+                                       options="{'currency_field': 'company_currency_id'}"/>
+                            </div>
+                        </group>
+                        <field name="lot_properties" nolabel="1" columns="2" hideAddButton="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="note"/>
+                        </page>
+                        <page string="Related Asset" name="related_asset">
+                            <field name="related_assets_ids">
+                                <list string="Related Assets" editable="bottom">
+                                    <field name="product_id" domain="[('is_asset', '=', True)]"/>
+                                    <field name="product_lot_id" domain="[('product_id', '=', product_id)]"/>
+                                    <field name="asset_id"/>
+                                    <field name="alert_duration_id"/>
+                                    <field name="maintenance_frequency_id" required="1" options="{'no_create': True, 'no_create_edit': True}"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Expense" name="expense">
+                            <field name="asset_repair_expense_ids">
+                                <form>
+                                    <group>
+                                        <field name="title"/>
+                                        <field name="responsible_user_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="total_cost"/>
+                                    </group>
+                                </form>
+                                <list string="Repair Expenses">
+                                    <field name="title"/>
+                                    <field name="responsible_user_id"/>
+                                    <field name="total_cost"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_repair_cost" string="Total Cost"/>
+                            </group>
+                        </page>
+                        <page string="Other Expense" name="other_expense">
+                            <field name="asset_other_expense_ids">
+                                <list string="Repair Expenses" editable="bottom">
+                                    <field name="title"/>
+                                    <field name="responsible_user_id"/>
+                                    <field name="total_cost"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_other_cost" string="Toal Cost"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_production_lot_asset_tree" model="ir.ui.view">
+        <field name="name">stock.production.lot.asset.list</field>
+        <field name="model">stock.lot</field>
+        <field name="arch" type="xml">
+            <list string="Lots/Serial Numbers" multi_edit="1">
+                <field name="name" decoration-bf="1"/>
+                <field name="ref" optional="show" string="Asset Id"/>
+                <field name="product_id" readonly="1"/>
+                <field name="create_date" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="current_location" optional="hide" string="Current Location"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
+                <field name="lot_properties" optional="hide"/>
+                <field name="product_qty" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="search_product_lot_filter_inherit" model="ir.ui.view">
+        <field name="name">stock.production.lot.search.inherit</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.search_product_lot_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='creation_date']" position="after">
+                <filter string="Archived" name="archived_assets" domain="[('active', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_repair_order_form_filter_inherit" model="ir.ui.view">
+        <field name="name">repair.select</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_create_date']" position="after">
+                <filter name="filter_schedule_date" date="schedule_date"/>
+                <filter string="Scheduled Till Today" name="scheduled_till_today"
+                    domain="[('schedule_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Scheduled Today" name="scheduled_today"
+                    domain="[('schedule_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
