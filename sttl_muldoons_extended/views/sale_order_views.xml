@@ -11,6 +11,11 @@
             <xpath expr="//sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='product_uom_qty']" position="after">
                 <field name="qty_available_today"/>
             </xpath>
+            <xpath expr="//field[@name='sale_order_template_id']" position="attributes">
+                <attribute name="domain">
+                    [('partner_id', '=', partner_id)]
+                </attribute>
+            </xpath>
         </field>
     </record>
 

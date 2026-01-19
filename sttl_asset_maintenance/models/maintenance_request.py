@@ -438,3 +438,27 @@ class MaintenanceRequest(models.Model):
             'view_mode': 'list,form',
             'domain': [('maintenance_request_id', '=', self.id)],
         }
+    
+    def action_create_invoice(self):
+        self.ensure_one()
+        if not self.site_name_id:
+            raise UserError(_("Please select a Site Name first."))
+
+        invoice = self.env['account.move'].create({
+            'move_type': 'out_invoice',
+            'partner_id': self.site_name_id.id,
+            'invoice_origin': self.name,
+            'invoice_line_ids': [(0, 0, {
+                'product_id': self.product_id.id,
+                'quantity': 1,
+                'price_unit': self.product_id.lst_price,
+            })]
+        })
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Customer Invoice'),
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+            'view_mode': 'form',
+        }

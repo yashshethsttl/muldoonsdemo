@@ -9,12 +9,16 @@ class SaleOrderInherit(models.Model):
         string='Order Type',
     )
 
-
-# class SaleOrderLineInherit(models.Model):
-#     _inherit = 'sale.order.line'
-
-#     qty_available = fields.Float(
-#         string='Quantity Available',
-#         related='product_id.qty_available',
-#         store=True,
-#     )
+    sale_order_template_id = fields.Many2one(
+        comodel_name='sale.order.template',
+        string="Quotation Template",
+        compute='_compute_sale_order_template_id',
+        store=True,
+        readonly=False,
+        check_company=True,
+        precompute=True,
+        domain="""[
+            '|', ('company_id', '=', False), ('company_id', '=', company_id),
+            '|', ('partner_id', '=', False), ('partner_id', '=', partner_id)
+        ]"""
+    )
